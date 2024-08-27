@@ -1,61 +1,92 @@
-import React, { useState } from 'react';
-import { Button, ProgressBar } from 'react-bootstrap';
-import './UserDashboard.css'; // Optional: Create a separate CSS file for styles
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faCog, faCloudArrowUp, faExpand, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
+import './UserDashboard.css';
+import { SemiCircleProgress } from 'react-semicircle-progressbar'; 
+import { Button } from 'react-bootstrap';
+import  SettingsBtn from "../../icons/Settings.svg"
+import  StarIcon from "../../icons/Star.svg"
+import  UploadIcon from "../../icons/Upload.svg"
 
-function UserDashboard() {
-  const [files, setFiles] = useState([
-    'Name.xlsx',
-    'Name.xlsx',
-    'Name.xlsx'
-  ]);
 
-  const handleFileUpload = (e) => {
-    const newFile = e.target.files[0];
-    if (newFile) {
-      setFiles([...files, newFile.name]);
-    }
-  };
 
+
+const SemiCircleProgressBar = ({percentage}) => {
   return (
-    <div className="user-dashboard">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <FontAwesomeIcon icon={faEnvelope} size="2x" />
-        <FontAwesomeIcon icon={faCog} size="2x" />
-      </div>
+    <div className="semi-circle-container">
+      <SemiCircleProgress
+        percentage={percentage}
+        size={{
+          width: 300,
+          height: 200,
+        }}
+        strokeLinecap={"butt"}
+        strokeWidth={18}
+        strokeColor="#2087fe"
+        hasBackground={true}
+        bgStrokeColor="#eee"  
+      />
+      <p className="storage-used ">Storage Used</p>
+    </div>
+  );
+};
 
-      <div className="user-info mb-3 p-3">
-        <div className="d-flex justify-content-between align-items-center mb-2">
-          <h5>Username</h5>
-          <span className="badge bg-secondary">Plan: Gold</span>
-        </div>
-        <ProgressBar now={50} label="Pages left: 4" className="mb-2" />
-        <Button variant="dark" className="w-100">Upgrade Plan</Button>
-      </div>
-
-      <div className="files-section mb-3">
-        <h6>Files</h6>
-        {files.map((file, index) => (
-            <div className="custom-file-item">
-          {file}
+const UserDashboard = () => {
+  return (
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="dashboard-container" style={{ width: '500px' }}>
+        
+        {/* User Information Section */}
+        <div className="card p-3 mb-3 user-info-section">
+          <div className="d-flex align-items-center">
+            <img
+              src="https://via.placeholder.com/40"
+              alt="User Avatar"
+              className="rounded-circle me-3"
+              style={{ width: '40px', height: '40px' }}
+            />
+            <div>
+              <div className="fw-bold">User Name</div>
+              <div className="text-muted">user@gmail.com</div>
+            </div>
+            <Button className='settings-btn'><img src={SettingsBtn} alt="Settings Icon"/></Button>
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div className="d-flex justify-content-around mt-4">
-        <input type="file" onChange={handleFileUpload} className="d-none" id="file-upload" />
-        <label htmlFor="file-upload" className="upload-btn">
-        <FontAwesomeIcon icon={faCloudArrowUp}  size="2x"/>
-        </label>
-        <FontAwesomeIcon icon={faExpand} size="2x" />
-      </div>
+        {/* Plan Details Section */}
+        <div className="card p-4 plan-details-section">
+          <h5 className="plan-details">Plan Details</h5>
+          <div className="text-center mb-4 d-flex flex-row justify-content-between">
+            <h5 className="fw-bold">Premium</h5>
+            <button className="btn btn-warning"><img src={StarIcon} alt="Star Icon" /> Upgrade</button>
+          </div>
 
-      <div className="text-center mt-4">
-        <FontAwesomeIcon icon={faTimesCircle} size="2x" />
+          <div className="text-center">
+            <SemiCircleProgressBar percentage={60} />
+          </div>
+
+          <div className="d-flex justify-content-around text-center mb-4">
+            <div>
+              <div className="fw-bold">10</div>
+              <div className="text-muted">Pages Left</div>
+            </div>
+            <div>
+              <div className="fw-bold">120</div>
+              <div className="text-muted">Days Left</div>
+            </div>
+            <div>
+              <div className="fw-bold">1GB</div>
+              <div className="text-muted">Storage Left</div>
+            </div>
+          </div>
+
+          
+        </div>
+        <div className="text-center mt-4">
+            <button className="btn upload-btn w-50"><img src={UploadIcon} alt="upload Icon" /> Upload</button>
+          </div>
+        
       </div>
     </div>
   );
-}
+};
 
 export default UserDashboard;

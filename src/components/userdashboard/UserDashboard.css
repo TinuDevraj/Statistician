@@ -1,72 +1,88 @@
-.user-dashboard {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-  }
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
   
-  .user-info {
-    background-color: #e0e0e0;
-    border-radius: 5px;
-  }
+}
+
+.user-info-section {
+  border-radius: 20px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border:none !important;
+}
+
+.plan-details-section {
+  border-radius: 20px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border:none !important;
+ 
+}
+
+.semi-circle-container {
+  position: relative;
+}
+
+.semi-circle {
+  position: relative;
+  width: 150px;
+  height: 75px;
+  background-color: #e0e0e0;
+  border-top-left-radius: 150px;
+  border-top-right-radius: 150px;
+  overflow: hidden;
+}
+
+.semi-circle-fill {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-color: #007bff;
+  transform-origin: center bottom;
+  top: -162px;
+  left: -94px;
+}
+
+.semi-circle-inside {
+  position: absolute;
+  width: 110px;
+  height: 55px;
+  background-color: white;
+  top: 20px;
+  left: 20px;
+  border-top-left-radius: 100px;
+  border-top-right-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.percentage-text {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.storage-used {
+  position: absolute;
+  top: 70%;
+  left: 40%;
+  font-size: small;
+  color: #a9a9a9 !important;
+}
+
+.plan-details {
+  font-size: small;
+  color: #a9a9a9 !important;
+}
+
+.settings-btn{
+  position: absolute;
+  right: 20px;
+  background: none !important;
+  border: none !important;
   
-  .files-section h6 {
-    margin-bottom: 10px;
-  }
   
-  .icon-placeholder {
-    width: 50px;
-    height: 50px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-  }
-  
-  .upload-btn {
-    cursor: pointer;
-  }
-  
-  .close-icon-placeholder {
-    width: 50px;
-    height: 50px;
-    background-color: #e0e0e0;
-    border-radius: 50%;
-    margin: auto;
-  }
-  
-  .custom-file-item {
-    background-color: #e0e0e0 !important;
-    height: 50px !important;
-    border-radius: 5px !important;
-    border: none !important;
-    padding: 10px !important;
-    font-size: 16px !important;
-    margin-bottom: 10px;
-  }
-  .user-dashboard {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f8f9fa;
-  }
-  
-  .user-info {
-    background-color: #e0e0e0;
-    border-radius: 5px;
-  }
-  
-  .files-section h6 {
-    margin-bottom: 10px;
-  }
-  
-  .upload-btn {
-    cursor: pointer;
-  }
-  
-  .text-center {
-    margin-top: 20px;
-  }
-  
-  .font-awesome-icon {
-    color: #333;
-  }
-  
+}
+
+.upload-btn{
+  background-color: #1d88ff !important;
+  color: #fff !important;
+}
