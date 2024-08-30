@@ -1,54 +1,122 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./UserDashboard.css";
 import { SemiCircleProgress } from "react-semicircle-progressbar";
-import UploadProgressModal from "../helpers/UploadProgressModal";
-import PlanSummaryModal from "../helpers/PlanSummaryModal";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Alert } from "react-bootstrap";
+import axios from "axios";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import SettingsBtn from "../../SVG/Settings.svg";
 import StarIcon from "../../SVG/Star.svg";
 import UploadIcon from "../../SVG/Upload.svg";
 import AlertIcon from "../../SVG/Alert.svg";
-import Alert from "react-bootstrap/Alert";
+import PlanSummaryModal from "../helpers/PlanSummaryModal";
+import UploadProgressModal from "../helpers/UploadProgressModal";
 
-const SemiCircleProgressBar = ({ percentage }) => {
-  return (
-    <div className="semi-circle-container">
-      <SemiCircleProgress
-        percentage={percentage}
-        size={{
-          width: 300,
-          height: 200,
-        }}
-        strokeLinecap={"butt"}
-        strokeWidth={18}
-        strokeColor="#2087fe"
-        hasBackground={true}
-        bgStrokeColor="#eee"
-      />
-      <p className="storage-used">Storage Used</p>
-    </div>
-  );
-};
+
+const SemiCircleProgressBar = ({ percentage }) => (
+  <div className="semi-circle-container">
+    <SemiCircleProgress
+      percentage={percentage}
+      size={{ width: 300, height: 200 }}
+      strokeLinecap="butt"
+      strokeWidth={18}
+      strokeColor="#2087fe"
+      hasBackground
+      bgStrokeColor="#eee"
+    />
+    <p className="storage-used">Storage Used</p>
+  </div>
+);
 
 const UserDashboard = () => {
   const [showModal, setShowModal] = useState(false);
-  const [showProgressModal, setshowProgressModal] = useState(true);
+  const [showProgressModal, setshowProgressModal] = useState(false);
+  const [type, setType] = useState(false);
   const [showPlanSummaryModal, setshowPlanSummaryModal] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
-  const [progress, setProgress] = useState(70);
+  // const [progress, setProgress] = useState(70);
+  const [convertedData, setConvertedData] = useState(null);
+  const [fileResponse, setFileResponse] = useState(null);
   const percentage = 70;
 
-  const handleClose = () => setShowModal(false);
-  const handleCloseProgress = () => setshowProgressModal(false);
-  const handleClosePlanSummaryModal = () => setshowPlanSummaryModal(false);
+  const toggleAlert = () => setShowAlert((prev) => !prev);
 
-  const handleShow = () => setShowModal(true);
+  const handleFileUpload = useCallback(async (formData) => {
+    setshowProgressModal(true);
+    setType("Uploading");
+    try {
+      const response = await axios.post("https://docgeniee.org/DOC/upload", formData);
+      setFileResponse(response.data.filenames);
+    } catch (error) {
+    setshowProgressModal(false);
+      console.error("Error uploading file:", error);
+    }
+  }, []);
 
-  const handleFileClick = () => {
-    document.getElementById("file-upload").click();
+  const handleFileChange = async (event) => {
+    const files = event.target.files;
+    if (files.length === 0) return;
+
+    const formData = new FormData();
+    Array.from(files).forEach((file) => formData.append("file", file));
+
+    await handleFileUpload(formData);
   };
 
-  const toggleAlert = () => setShowAlert(!showAlert);
+  const processFile = useCallback(async (fileData) => {
+    setshowProgressModal(true);
+    setType("Processing");
+    try {
+      const response = await axios.post("https://docgeniee.org/DOC/process", fileData);
+      if (response.data.status === "success") {
+        setConvertedData(response.data.results);
+        setType(false);
+      }
+    } catch (error) {
+    setshowProgressModal(false);
+      console.error("Error processing file:", error);
+    }
+  }, []);
+
+  const exportToExcel = useCallback(() => {
+    if (!convertedData || convertedData.length === 0) {
+      console.error("No data available to export");
+      return;
+    }
+
+    const workbook = XLSX.utils.book_new();
+
+    convertedData.forEach((data) => {
+      const { invoice_header, item_details } = data;
+
+      if (invoice_header) {
+        const invoiceHeaderSheet = XLSX.utils.json_to_sheet(invoice_header);
+        XLSX.utils.book_append_sheet(workbook, invoiceHeaderSheet, "Invoice Header");
+      }
+
+      if (item_details) {
+        const itemDetailsSheet = XLSX.utils.json_to_sheet(item_details);
+        XLSX.utils.book_append_sheet(workbook, itemDetailsSheet, "Item Details");
+      }
+    });
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "invoice_data.xlsx");
+  }, [convertedData]);
+
+  useEffect(() => {
+    if (fileResponse) {
+      processFile({ filenames: fileResponse });
+    }
+  }, [fileResponse, processFile]);
+
+  useEffect(() => {
+    if (convertedData) {
+      exportToExcel();
+    }
+  }, [convertedData, exportToExcel]);
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
@@ -71,22 +139,16 @@ const UserDashboard = () => {
             </Button>
           </div>
         </div>
-        <div
-          className={`Alert alert-transition ${
-            !showAlert ? "alert-hidden" : ""
-          }`}
-        >
-          {showAlert && (
-            <Alert variant={"danger"} className="Alert">
-              <img
-                src={AlertIcon}
-                alt="Alert Icon"
-                style={{ paddingRight: "20px", paddingLeft: "10px" }}
-              />
-              Plan expiring in 3 days
-            </Alert>
-          )}
-        </div>
+        {showAlert && (
+          <Alert variant="danger" className="Alert alert-transition">
+            <img
+              src={AlertIcon}
+              alt="Alert Icon"
+              style={{ paddingRight: "20px", paddingLeft: "10px" }}
+            />
+            Plan expiring in 3 days
+          </Alert>
+        )}
 
         {/* Plan Details Section */}
         <div className="card p-4 plan-details-section">
@@ -119,18 +181,13 @@ const UserDashboard = () => {
         </div>
 
         <div className="text-center mt-4">
-          <button className="btn upload-btn w-50" onClick={handleShow}>
-            <img src={UploadIcon} alt="Upload Icon" /> Upload
+          <button className="btn upload-btn w-50" onClick={() => setShowModal(true)}>
+            <img src={UploadIcon} alt="Upload Icon" />Upload
           </button>
         </div>
 
         {/* Upload Modal */}
-        <Modal
-          show={showModal}
-          onHide={handleClose}
-          centered
-          dialogClassName="custom-modal"
-        >
+        <Modal show={showModal} onHide={() => setShowModal(false)} centered dialogClassName="custom-modal">
           <Modal.Header closeButton>
             <Modal.Title className="w-100 text-center upload-title">
               Upload Files
@@ -148,7 +205,7 @@ const UserDashboard = () => {
                   opacity: 0,
                   cursor: "pointer",
                 }}
-                onChange={(e) => console.log(e.target.files)}
+                onChange={handleFileChange}
               />
               <img
                 src={UploadIcon}
@@ -157,15 +214,15 @@ const UserDashboard = () => {
                 width={"40px"}
               />
             </div>
-            <p
-              className="mt-3"
-              style={{ fontSize: "0.8rem", color: "#6c757d" }}
-            >
+            <p className="mt-3" style={{ fontSize: "0.8rem", color: "#6c757d" }}>
               Drag and drop files here or{" "}
               <a
                 href="#"
                 style={{ fontSize: "0.8rem", color: "#007bff" }}
-                onClick={handleFileClick}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("file-upload").click();
+                }}
                 className="text-decoration-none"
               >
                 Click here
@@ -174,8 +231,8 @@ const UserDashboard = () => {
           </Modal.Body>
         </Modal>
       </div>
-      {/*<UploadProgressModal show={showProgressModal} onHide={handleCloseProgress} progress={progress} />*/}
-      {/*<PlanSummaryModal show={showPlanSummaryModal} onHide={handleClosePlanSummaryModal} percentage={percentage}/>*/}
+      <UploadProgressModal show={showProgressModal} onHide={setshowProgressModal} type={type}/>
+      {/* <PlanSummaryModal show={showPlanSummaryModal} onHide={handleClosePlanSummaryModal} percentage={percentage}/> */}
     </div>
   );
 };
