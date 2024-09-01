@@ -1,0 +1,119 @@
+/* pricingmodal.css */
+
+.modal-90w {
+  max-width: 98% !important;
+}
+
+.modal-header-custom {
+  background-color: #f5f5f5;
+  border-bottom: none !important;
+}
+
+.pricing-modal-body {
+  background-color: #f5f5f5;
+}
+
+.pricing-card {
+  border-radius: 20px;
+  border-width: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card .card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.pricing-card .card-text {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.pricing-card h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.pricing-card p {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.pricing-benefits p {
+  font-size: 1rem;
+  color: #000;
+  text-align: left;
+}
+
+.pricing-card .btn {
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  background-color: #eeeeee;
+  color: #000;
+  border-width: 0;
+}
+
+.pricing-card:hover {
+  background-color: #2287ff !important;
+  transform: scale(1.05);
+
+  button{
+    color: #2287ff;
+  }
+  
+
+}
+
+
+
+/* Dark mode styles */
+.dark-mode {
+  background-color: #121212;
+  color: #fff;
+}
+
+.dark-mode .modal-content {
+  background-color: rgb(30, 30, 30);
+}
+
+.dark-mode .modal-header {
+  border-bottom-color: #444;
+  background-color: rgb(30, 30, 30);
+}
+
+.dark-mode .close {
+  background-color: #fff !important;
+  color: #fff;
+}
+
+.dark-mode .btn-light {
+  background-color: #fff;
+  color: black;
+}
+
+.dark-mode .btn-light:hover {
+  background-color: #fff;
+  color: #9d12fb;
+}
+
+.dark-mode .pricing-card {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-mode .pricing-card:hover {
+  background-color:  #2287ff !important;
+}
+
+.dark-mode .pricing-modal-body {
+  background-color: rgb(30, 30, 30);
+}
+
+.dark-mode .pricing-benefits p {
+  color: #fff;
+}
+
+.dark-mode .pricing-card .card-text,
+.dark-mode .pricing-card p {
+  color: #bbb;
+}

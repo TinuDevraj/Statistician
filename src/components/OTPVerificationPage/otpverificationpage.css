@@ -1,0 +1,21 @@
+/* otpverificationpage.css */
+
+/* General styles for OTP inputs */
+.otp-input {
+    width: 3rem;
+    height: 4rem;
+    border-radius: 20% !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .otp-input {
+      width: 2rem;
+      height: 3rem;
+    }
+  
+    .otp-submit-button {
+      font-size: 1rem;
+    }
+  }
+  

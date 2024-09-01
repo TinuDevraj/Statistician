@@ -1,0 +1,57 @@
+/* AuthForm.css */
+.auth-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .auth-form .form-control {
+    background-color: #f5f5f5;
+    border: none;
+    padding: 0.75rem;
+  }
+  
+  .auth-form .submit-btn {
+    background-color: #2287ff !important;
+    border: none;
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .dark-mode {
+    input,textarea,select {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    
+  }
+  
+  
+}
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container .password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.password-input-container .form-control {
+  padding-right: 40px;
+}
+
+.forgot-password{
+float: right;
+text-decoration: none;
+
+}
