@@ -12,7 +12,6 @@ import AlertIcon from "../../SVG/Alert.svg";
 import PlanSummaryModal from "../helpers/PlanSummaryModal";
 import UploadProgressModal from "../helpers/UploadProgressModal";
 
-
 const SemiCircleProgressBar = ({ percentage }) => (
   <div className="semi-circle-container">
     <SemiCircleProgress
@@ -45,10 +44,13 @@ const UserDashboard = () => {
     setshowProgressModal(true);
     setType("Uploading");
     try {
-      const response = await axios.post("https://docgeniee.org/DOC/upload", formData);
+      const response = await axios.post(
+        "https://docgeniee.org/DOC/upload",
+        formData
+      );
       setFileResponse(response.data.filenames);
     } catch (error) {
-    setshowProgressModal(false);
+      setshowProgressModal(false);
       console.error("Error uploading file:", error);
     }
   }, []);
@@ -67,13 +69,16 @@ const UserDashboard = () => {
     setshowProgressModal(true);
     setType("Processing");
     try {
-      const response = await axios.post("https://docgeniee.org/DOC/process", fileData);
+      const response = await axios.post(
+        "https://docgeniee.org/DOC/process",
+        fileData
+      );
       if (response.data.status === "success") {
         setConvertedData(response.data.results);
         setType(false);
       }
     } catch (error) {
-    setshowProgressModal(false);
+      setshowProgressModal(false);
       console.error("Error processing file:", error);
     }
   }, []);
@@ -91,16 +96,27 @@ const UserDashboard = () => {
 
       if (invoice_header) {
         const invoiceHeaderSheet = XLSX.utils.json_to_sheet(invoice_header);
-        XLSX.utils.book_append_sheet(workbook, invoiceHeaderSheet, "Invoice Header");
+        XLSX.utils.book_append_sheet(
+          workbook,
+          invoiceHeaderSheet,
+          "Invoice Header"
+        );
       }
 
       if (item_details) {
         const itemDetailsSheet = XLSX.utils.json_to_sheet(item_details);
-        XLSX.utils.book_append_sheet(workbook, itemDetailsSheet, "Item Details");
+        XLSX.utils.book_append_sheet(
+          workbook,
+          itemDetailsSheet,
+          "Item Details"
+        );
       }
     });
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
 
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(data, "invoice_data.xlsx");
@@ -139,16 +155,22 @@ const UserDashboard = () => {
             </Button>
           </div>
         </div>
-        {showAlert && (
-          <Alert variant="danger" className="Alert alert-transition">
-            <img
-              src={AlertIcon}
-              alt="Alert Icon"
-              style={{ paddingRight: "20px", paddingLeft: "10px" }}
-            />
-            Plan expiring in 3 days
-          </Alert>
-        )}
+        <div
+          className={`Alert alert-transition ${
+            !showAlert ? "alert-hidden" : ""
+          }`}
+        >
+          {showAlert && (
+            <Alert variant="danger" className="Alert ">
+              <img
+                src={AlertIcon}
+                alt="Alert Icon"
+                style={{ paddingRight: "20px", paddingLeft: "10px" }}
+              />
+              Plan expiring in 3 days
+            </Alert>
+          )}
+        </div>
 
         {/* Plan Details Section */}
         <div className="card p-4 plan-details-section">
@@ -181,13 +203,22 @@ const UserDashboard = () => {
         </div>
 
         <div className="text-center mt-4">
-          <button className="btn upload-btn w-50" onClick={() => setShowModal(true)}>
-            <img src={UploadIcon} alt="Upload Icon" />Upload
+          <button
+            className="btn upload-btn w-50"
+            onClick={() => setShowModal(true)}
+          >
+            <img src={UploadIcon} alt="Upload Icon" />
+            Upload
           </button>
         </div>
 
         {/* Upload Modal */}
-        <Modal show={showModal} onHide={() => setShowModal(false)} centered dialogClassName="custom-modal">
+        <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          centered
+          dialogClassName="custom-modal"
+        >
           <Modal.Header closeButton>
             <Modal.Title className="w-100 text-center upload-title">
               Upload Files
@@ -214,7 +245,10 @@ const UserDashboard = () => {
                 width={"40px"}
               />
             </div>
-            <p className="mt-3" style={{ fontSize: "0.8rem", color: "#6c757d" }}>
+            <p
+              className="mt-3"
+              style={{ fontSize: "0.8rem", color: "#6c757d" }}
+            >
               Drag and drop files here or{" "}
               <a
                 href="#"
@@ -231,7 +265,11 @@ const UserDashboard = () => {
           </Modal.Body>
         </Modal>
       </div>
-      <UploadProgressModal show={showProgressModal} onHide={setshowProgressModal} type={type}/>
+      <UploadProgressModal
+        show={showProgressModal}
+        onHide={setshowProgressModal}
+        type={type}
+      />
       {/* <PlanSummaryModal show={showPlanSummaryModal} onHide={handleClosePlanSummaryModal} percentage={percentage}/> */}
     </div>
   );
